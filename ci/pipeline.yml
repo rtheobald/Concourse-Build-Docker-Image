@@ -1,0 +1,27 @@
+---
+jobs:  
+- name: build-docker-image
+  public: true
+  serial: true
+  plan:
+  - get: git-docker-mariadb-galera
+    trigger: true
+  - put: docker-image-mariadb-galera
+    params:
+      build: git-docker-mariadb-galera
+
+resources:  
+- name: git-docker-mariadb-galera
+  type: git
+  source:
+    uri: https://github.com/rtheobald/docker-mariadb-galera
+    branch: master
+    private_key: {{github-private-key}}
+
+- name: docker-image-mariadb-galera
+  type: docker-image
+  source:
+    email: {{docker-hub-email}}
+    username: {{docker-hub-username}}
+    password: {{docker-hub-password}}
+    repository: {{docker-mariadb-galera-image}}
